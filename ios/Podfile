@@ -14,8 +14,15 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
+
+
 target 'CleverTapDemo' do
+  pod 'CleverTap-iOS-SDK'
   config = use_native_modules!
+  use_frameworks!
+    pod 'clevertap-react-native', :path => '../node_modules/clevertap-react-native'
+ 
+
 
   use_react_native!(
     :path => config[:reactNativePath],

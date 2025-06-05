@@ -1,52 +1,93 @@
-package com.clevertapdemo
+// File: android/app/src/main/java/com/clevertapdemo/MainApplication.java
 
-import android.app.Application
-import com.facebook.react.PackageList
-import com.facebook.react.ReactApplication
-import com.facebook.react.ReactHost
-import com.facebook.react.ReactNativeHost
-import com.facebook.react.ReactPackage
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
-import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
-import com.facebook.react.defaults.DefaultReactNativeHost
-import com.facebook.react.soloader.OpenSourceMergedSoMapping
-import com.facebook.soloader.SoLoader
+package com.clevertapdemo;
 
-//changes as per the documentation: 
+import android.app.Application;
+import android.content.Context;
 
-import com.clevertap.react.CleverTapPackage;
-import com.clevertap.react.CleverTapApplication;
+// CleverTap imports (only if you are using CleverTap)
 import com.clevertap.android.sdk.ActivityLifecycleCallback;
+import com.clevertap.react.CleverTapPackage;
 import com.clevertap.android.sdk.CleverTapAPI;
-import com.clevertap.android.sdk.CleverTapAPI.LogLevel;
+import com.clevertap.react.CleverTapApplication;
 
-class MainApplication : Application(), ReactApplication {
+// React Native imports
+import com.facebook.react.PackageList;
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.defaults.DefaultReactNativeHost;
 
-  override val reactNativeHost: ReactNativeHost =
-      object : DefaultReactNativeHost(this) {
-        override fun getPackages(): List<ReactPackage> =
-            PackageList(this).packages.apply {
-              // Packages that cannot be autolinked yet can be added manually here, for example:
-              // add(MyReactNativePackage())
-            }
+// SoLoader imports for RN 0.79.2
+import com.facebook.soloader.SoLoader;
+import com.facebook.react.soloader.OpenSourceMergedSoMapping;
 
-        override fun getJSMainModuleName(): String = "index"
+import java.io.IOException;
+import java.util.List;
 
-        override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
+public class MainApplication extends CleverTapApplication implements ReactApplication {
 
-        override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
-        override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
-      }
+    // ─── 1) Use DefaultReactNativeHost so we can override isNewArchEnabled() & isHermesEnabled() ───
+    private final ReactNativeHost mReactNativeHost = new DefaultReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
 
-  override val reactHost: ReactHost
-    get() = getDefaultReactHost(applicationContext, reactNativeHost)
+        @Override
+        protected List<ReactPackage> getPackages() {
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            // If CleverTapPackage isn’t autolinked, add it manually:
+            return new PackageList(this).getPackages();
+        }
 
-  override fun onCreate() {
-    super.onCreate()
-    SoLoader.init(this, OpenSourceMergedSoMapping)
-    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
-      load()
+        @Override
+        protected String getJSMainModuleName() {
+            return "index";
+        }
+
+        @Override
+        protected boolean isNewArchEnabled() {
+            // Bound to android/gradle.properties: newArchEnabled=false
+            return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+        }
+
+        @Override
+        protected Boolean isHermesEnabled() {
+            // Bound to android/gradle.properties: enableHermes=false
+            return BuildConfig.IS_HERMES_ENABLED;
+        }
+    };
+
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
     }
-  }
+
+    // ─── 2) onCreate must not declare "throws", so catch IOException internally ───
+    @Override
+    public void onCreate() {
+        // Initialize SoLoader with the Kotlin-object INSTANCE
+        try {
+            SoLoader.init(this, OpenSourceMergedSoMapping.INSTANCE);
+        } catch (IOException e) {
+            // In dev, print the stack; in production you might log this to your error-tracker
+            e.printStackTrace();
+        }
+
+        super.onCreate();
+
+        // DO NOT call DefaultNewArchitectureEntryPoint.load() (newArchEnabled=false)
+
+        // CleverTap lifecycle registration (if using CleverTap)
+        ActivityLifecycleCallback.register(this);
+        CleverTapAPI.setDebugLevel(CleverTapAPI.LogLevel.VERBOSE);
+    }
+
+    // Must match ContextWrapper.attachBaseContext exactly
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        // If you ever need multidex, add MultiDex.install(this) here
+    }
 }

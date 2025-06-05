@@ -1,22 +1,45 @@
-package com.clevertapdemo
+// File: android/app/src/main/java/com/clevertapdemo/MainActivity.java
 
-import com.facebook.react.ReactActivity
-import com.facebook.react.ReactActivityDelegate
-import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
-import com.facebook.react.defaults.DefaultReactActivityDelegate
+package com.clevertapdemo;
 
-class MainActivity : ReactActivity() {
+import android.os.Bundle;
+import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
-  /**
-   * Returns the name of the main component registered from JavaScript. This is used to schedule
-   * rendering of the component.
-   */
-  override fun getMainComponentName(): String = "CleverTapDemo"
+// SoLoader import (legacy overload, still valid for initializing before any JNI loads)
+import com.facebook.soloader.SoLoader;
 
-  /**
-   * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
-   * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
-   */
-  override fun createReactActivityDelegate(): ReactActivityDelegate =
-      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+public class MainActivity extends ReactActivity {
+
+    @Override
+    protected String getMainComponentName() {
+        return "CleverTapDemo";  // Your JS entry-point name
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // ─── Initialize SoLoader EARLY so that RN's delegate never tries to load missing .so ───
+        SoLoader.init(this, /* native exopackage */ false);
+        //                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        // This ensures “SoLoader.init() not yet called” errors cannot occur,
+        // and prevents ReactActivityDelegate from triggering feature-flags JNI.
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected ReactActivityDelegate createReactActivityDelegate() {
+        // By passing (false, false), we force the RN delegate to skip any
+        // Fabric/TurboModules and thus skip feature-flags JNI entirely.
+        boolean fabricEnabled = false;
+        boolean turboModuleEnabled = false;
+
+        return new DefaultReactActivityDelegate(
+            this,
+            getMainComponentName(),
+            fabricEnabled,
+            turboModuleEnabled
+        );
+    }
 }
