@@ -10,7 +10,6 @@ import FilterIcon    from '../../resources/icons/filter.svg';
 import CloseIcon     from '../../resources/icons/close.svg';
 import TrashIcon     from '../../resources/icons/Trash.svg';
 import SearchIcon    from '../../resources/icons/Search.svg';
-import Header from '../components/Header';
 
 
 const { width } = Dimensions.get('window');
@@ -81,7 +80,14 @@ export default function SearchScreen() {
   const renderHeader = () => (
     <>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+             <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }}
+        >
           <ArrowLeft width={20} height={20} fill="#333" />
         </TouchableOpacity>
       </View>
