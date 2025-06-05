@@ -12,7 +12,7 @@ import {
 import {useWishlist} from '../context/WishlistContext';
 import {useCart} from '../context/CartContext';
 import ArrowLeft from '../../resources/icons/ArrowLeft.svg';
-import Header from '../components/Header';
+
 
 
 export default function WishlistScreen({navigation}) {
@@ -22,17 +22,17 @@ export default function WishlistScreen({navigation}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  <TouchableOpacity
-    style={styles.qtyBtn}
-    onPress={() => {
-      if (cartEntry.quantity === 1) {
-        removeItem(cartEntry);
-      } else {
-        decrementItem(cartEntry);
-      }
-    }}>
-    <Text style={styles.qtySign}>–</Text>
-  </TouchableOpacity>;
+  // <TouchableOpacity
+  //   style={styles.qtyBtn}
+  //   onPress={() => {
+  //     if (cartEntry.quantity === 1) {
+  //       removeItem(cartEntry);
+  //     } else {
+  //       decrementItem(cartEntry);
+  //     }
+  //   }}>
+  //   <Text style={styles.qtySign}>–</Text>
+  // </TouchableOpacity>;
 
   // Fetch product details for all items in wishlist
   useEffect(() => {
