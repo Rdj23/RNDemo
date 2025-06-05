@@ -40,7 +40,7 @@ import CustomDrawerContent   from './src/components/CustomDrawerContent';
 import WelcomeScreen         from './src/screens/WelcomeScreen';
 import RegisterScreen        from './src/screens/RegisterScreen';
 
-console.log('Header is', Header);           // Should log "function Header" or similar
+         // Should log "function Header" or similar
 console.log('WelcomeScreen is', WelcomeScreen); 
 
 const Drawer = createDrawerNavigator();
