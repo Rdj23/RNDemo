@@ -20,13 +20,15 @@ if (!Array.prototype.findLast) {
 
 // App.js
 import 'react-native-gesture-handler';
-// 
-import React, { useEffect } from 'react';
+//
+import React, {useEffect} from 'react';
 
-import { Platform, PermissionsAndroid , NativeModules } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createStackNavigator } from '@react-navigation/stack';
+import {LogBox} from 'react-native';
+
+import {Platform, PermissionsAndroid, NativeModules} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createStackNavigator} from '@react-navigation/stack';
 
 // Patch CleverTap's native module so new NativeEventEmitter doesn't warn about
 // missing listener methods. This must happen before importing the library.
@@ -36,29 +38,40 @@ if (ctModule) {
   ctModule.removeListeners = ctModule.removeListeners || (() => {});
 }
 
+// Silence NativeEventEmitter warnings once patched
+LogBox.ignoreLogs(['new NativeEventEmitter']);
+
+// Basic global error handler to prevent undefined ErrorUtils crashes
+if (global.ErrorUtils && global.ErrorUtils.getGlobalHandler) {
+  const defaultHandler = global.ErrorUtils.getGlobalHandler();
+  global.ErrorUtils.setGlobalHandler((err, isFatal) => {
+    console.error('Uncaught error', err);
+    if (defaultHandler) defaultHandler(err, isFatal);
+  });
+}
 
 import CleverTap from 'clevertap-react-native';
 // import messaging from '@react-native-firebase/messaging';
 
-import { UserProvider, useUser } from './src/context/UserContext';
-import { CartProvider }           from './src/context/CartContext';
-import { WishlistProvider }       from './src/context/WishlistContext';
+import {UserProvider, useUser} from './src/context/UserContext';
+import {CartProvider} from './src/context/CartContext';
+import {WishlistProvider} from './src/context/WishlistContext';
 
-import BottomTabs          from './src/navigation/BottomTabs';
+import BottomTabs from './src/navigation/BottomTabs';
 import CustomDrawerContent from './src/components/CustomDrawerContent';
-import WelcomeScreen       from './src/screens/WelcomeScreen';
-import RegisterScreen      from './src/screens/RegisterScreen';
+import WelcomeScreen from './src/screens/WelcomeScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 
-         // Should log "function Header" or similar
-// console.log('WelcomeScreen is', WelcomeScreen); 
+// Should log "function Header" or similar
+// console.log('WelcomeScreen is', WelcomeScreen);
 
 const Drawer = createDrawerNavigator();
-const Stack  = createStackNavigator();
+const Stack = createStackNavigator();
 
 // Utility to open the App Inbox from anywhere:
 export const openAppInbox = () => {
   CleverTap.showInbox({
-    tabs: ['Offers', 'Promotions'],         // optional tabs
+    tabs: ['Offers', 'Promotions'], // optional tabs
     navBarTitle: 'My Inbox',
     navBarColor: '#30241F',
     navBarTitleColor: '#ffffff',
@@ -76,8 +89,7 @@ function MainApp() {
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}
-      screenOptions={{ headerShown: false }}
-    >
+      screenOptions={{headerShown: false}}>
       <Drawer.Screen name="Main" component={BottomTabs} />
     </Drawer.Navigator>
   );
@@ -85,15 +97,15 @@ function MainApp() {
 
 function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Welcome"  component={WelcomeScreen} />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );
 }
 
 function RootNavigator() {
-  const { isLoggedIn } = useUser();
+  const {isLoggedIn} = useUser();
   return (
     <NavigationContainer>
       {isLoggedIn ? <MainApp /> : <AuthStack />}
@@ -106,46 +118,47 @@ export default function App() {
     // 1) Initialize the App Inbox once on app start
     CleverTap.initializeInbox();
 
-    // 2) Listen for inbox events (optional logging)
-    CleverTap.addListener(
-      CleverTap.CleverTapInboxDidInitialize,
-      () => console.log('📥 Inbox initialized')
-    );
-    CleverTap.addListener(
-      CleverTap.CleverTapInboxMessagesDidUpdate,
-      () => console.log('🔄 Inbox messages updated')
-    );
+    const subs = [
+      CleverTap.addListener(CleverTap.CleverTapInboxDidInitialize, () =>
+        console.log('📥 Inbox initialized'),
+      ),
+      CleverTap.addListener(CleverTap.CleverTapInboxMessagesDidUpdate, () =>
+        console.log('🔄 Inbox messages updated'),
+      ),
+    ];
 
     // 3) In-App messaging events (optional)
-    CleverTap.addListener(
-      CleverTap.CleverTapInAppNotificationShowed,
-      () => console.log('🎉 In-App shown')
+    subs.push(
+      CleverTap.addListener(CleverTap.CleverTapInAppNotificationShowed, () =>
+        console.log('🎉 In-App shown'),
+      ),
     );
-    CleverTap.addListener(
-      CleverTap.CleverTapInAppNotificationDismissed,
-      () => console.log('❌ In-App dismissed')
-    );
-    CleverTap.addListener(
-      CleverTap.CleverTapInAppNotificationButtonTapped,
-      evt => console.log('👉 In-App button tapped', evt)
+    CleverTap.addListener(CleverTap.CleverTapInAppNotificationDismissed, () =>
+      console.log('❌ In-App dismissed'),
     );
 
+    subs.push(
+      CleverTap.addListener(
+        CleverTap.CleverTapInAppNotificationButtonTapped,
+        evt => console.log('👉 In-App button tapped', evt),
+      ),
+    );
     // 4) Push token & channel setup
     (async () => {
       // Android 13+ push permission
       if (Platform.OS === 'android' && Platform.Version >= 33) {
         await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
         );
       }
       // Notification channel (Android)
       if (Platform.OS === 'android') {
         CleverTap.createNotificationChannel(
-          'Rohan25',               // channelId
-          'RohanRN',               // name
-          'Testing React Native',  // description
-          3,                       // importance (1–5)
-          true                     // show badge
+          'Rohan25', // channelId
+          'RohanRN', // name
+          'Testing React Native', // description
+          3, // importance (1–5)
+          true, // show badge
         );
       }
       // // FCM token
@@ -161,7 +174,6 @@ export default function App() {
     })();
 
     // Cleanup on unmount
-    
   }, []);
 
   return (
