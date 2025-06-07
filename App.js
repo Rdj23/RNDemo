@@ -23,10 +23,19 @@ import 'react-native-gesture-handler';
 // 
 import React, { useEffect } from 'react';
 
-import { Platform, PermissionsAndroid } from 'react-native';
+import { Platform, PermissionsAndroid , NativeModules } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+
+// Patch CleverTap's native module so new NativeEventEmitter doesn't warn about
+// missing listener methods. This must happen before importing the library.
+const ctModule = NativeModules.CleverTapReact;
+if (ctModule) {
+  ctModule.addListener = ctModule.addListener || (() => {});
+  ctModule.removeListeners = ctModule.removeListeners || (() => {});
+}
+
 
 import CleverTap from 'clevertap-react-native';
 // import messaging from '@react-native-firebase/messaging';
