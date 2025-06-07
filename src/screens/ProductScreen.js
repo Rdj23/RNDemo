@@ -131,7 +131,13 @@ export default function ProductScreen({ navigation, route }) {
       {/* Top bar: back + wishlist */}
       <View style={styles.topBar}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          
+              onPress={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                }
+              }}
+
           style={styles.topButton}
         >
           <ArrowLeft width={20} height={20} fill="#333" />

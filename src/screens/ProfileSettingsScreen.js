@@ -47,14 +47,23 @@ export default function ProfileSettingsScreen({ navigation }) {
       });
     }
 
-    navigation.goBack();
+      if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Top bar */}
       <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }}
+          style={styles.backBtn}
+        >
           <ArrowLeft width={24} height={24} fill="#333" />
         </TouchableOpacity>
         <Text style={styles.title}>Profile Settings</Text>

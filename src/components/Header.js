@@ -18,7 +18,11 @@ export default function Header({navigation, title = 'GemStore'}) {
         <TouchableOpacity
           style={styles.touchArea}
           activeOpacity={0.7}
-          onPress={() => navigation.goBack()}>
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }}>
           <ArrowLeft width={24} height={24} fill="#333" />
         </TouchableOpacity>
       ) : (
@@ -30,7 +34,7 @@ export default function Header({navigation, title = 'GemStore'}) {
         </TouchableOpacity>
       )}
 
-       <TouchableOpacity onPress={openAppInbox} style={styles.touchArea}>
+      <TouchableOpacity onPress={openAppInbox} style={styles.touchArea}>
         <NotificationIcon width={24} height={24} fill="#333" />
       </TouchableOpacity>
     </View>

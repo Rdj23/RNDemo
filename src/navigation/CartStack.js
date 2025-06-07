@@ -23,7 +23,13 @@ export default function CartStack() {
           title: 'Your Cart',
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              
+              onPress={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                }
+              }}
+
               style={{ marginLeft: 16 }}
             >
               <ArrowLeft width={24} height={24} fill="#333" />
