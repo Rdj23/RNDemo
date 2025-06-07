@@ -139,16 +139,16 @@ export default function App() {
           true                     // show badge
         );
       }
-      // FCM token
-      const token = await messaging().getToken();
-      CleverTap.setPushToken(token);
-      messaging().onTokenRefresh(newToken => {
-        CleverTap.setPushToken(newToken);
-      });
-      // Foreground message handler (optional)
-      messaging().onMessage(async remoteMessage => {
-        // you could show an alert or local notif here
-      });
+      // // FCM token
+      // const token = await messaging().getToken();
+      // CleverTap.setPushToken(token);
+      // messaging().onTokenRefresh(newToken => {
+      //   CleverTap.setPushToken(newToken);
+      // });
+      // // Foreground message handler (optional)
+      // messaging().onMessage(async remoteMessage => {
+      //   // you could show an alert or local notif here
+      // });
     })();
 
     // Cleanup on unmount
