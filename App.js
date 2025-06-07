@@ -44,13 +44,13 @@ import { UserProvider, useUser } from './src/context/UserContext';
 import { CartProvider }           from './src/context/CartContext';
 import { WishlistProvider }       from './src/context/WishlistContext';
 
-import BottomTabs            from './src/navigation/BottomTabs';
-import CustomDrawerContent   from './src/components/CustomDrawerContent';
-import WelcomeScreen         from './src/screens/WelcomeScreen';
-import RegisterScreen        from './src/screens/RegisterScreen';
+import BottomTabs          from './src/navigation/BottomTabs';
+import CustomDrawerContent from './src/components/CustomDrawerContent';
+import WelcomeScreen       from './src/screens/WelcomeScreen';
+import RegisterScreen      from './src/screens/RegisterScreen';
 
          // Should log "function Header" or similar
-console.log('WelcomeScreen is', WelcomeScreen); 
+// console.log('WelcomeScreen is', WelcomeScreen); 
 
 const Drawer = createDrawerNavigator();
 const Stack  = createStackNavigator();
