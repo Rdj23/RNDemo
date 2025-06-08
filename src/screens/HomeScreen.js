@@ -185,6 +185,6 @@ const styles = StyleSheet.create({
   image:         { width: CARD_W, height: CARD_W, borderRadius: 8 },
   name:          { marginTop: 8, fontSize: 14, color: '#1A1A1A' },
   price:         { marginTop: 4, fontSize: 14, fontWeight: '600', color: '#30241F' },
-  container: { flex: 1, backgroundColor: '#FFF' },
+  // container: { flex: 1, backgroundColor: '#FFF' },
   header:    { fontSize: 26, fontWeight: 'bold', textAlign: 'center', marginVertical: 32 },
 });
