@@ -24,9 +24,11 @@ export default function CartStack() {
           headerLeft: () => (
             <TouchableOpacity
               
-              onPress={() => {
+             onPress={() => {
                 if (navigation.canGoBack()) {
                   navigation.goBack();
+                } else {
+                  navigation.navigate('Home');
                 }
               }}
 

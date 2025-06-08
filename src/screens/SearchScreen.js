@@ -85,6 +85,8 @@ export default function SearchScreen() {
           onPress={() => {
             if (navigation.canGoBack()) {
               navigation.goBack();
+              } else {
+              navigation.navigate('Home');
             }
           }}
         >
