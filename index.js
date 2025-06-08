@@ -1,12 +1,14 @@
 
 
-// Ensure ErrorUtils has a reportFatalError method so crashes are logged
-if (!global.ErrorUtils?.reportFatalError) {
-  global.ErrorUtils = {
-    ...(global.ErrorUtils || {}),
-    reportFatalError: (error, isFatal = false) => {
-      console.error(`[reportFatalError] ${isFatal ? 'Fatal:' : ''}`, error);
-    },
+// Ensure the ErrorUtils module is loaded so LogBox doesn't crash on errors
+import 'react-native/Libraries/vendor/core/ErrorUtils';
+
+if (global.ErrorUtils && typeof global.ErrorUtils.reportFatalError !== 'function') {
+  global.ErrorUtils.reportFatalError = (error, isFatal = false) => {
+    console.error(
+      `[reportFatalError] ${isFatal ? 'Fatal:' : ''}`,
+      error,
+    );
   };
 }
 import 'react-native-gesture-handler';
