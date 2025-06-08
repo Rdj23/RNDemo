@@ -7,30 +7,38 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import UserIcon      from '../../resources/icons/User.svg';
-import SettingsIcon  from '../../resources/icons/Setting.svg';
-import { useUser }   from '../context/UserContext.js';
+import UserIcon from '../../resources/icons/User.svg';
+import ArrowLeft from '../../resources/icons/ArrowLeft.svg';
+import SettingsIcon from '../../resources/icons/Setting.svg';
+import {useUser} from '../context/UserContext.js';
 
-export default function ProfileScreen({ navigation }) {
-  const { user, setUser } = useUser();
+export default function ProfileScreen({navigation}) {
+  const {user, setUser} = useUser();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.arrowBack}>
+          <ArrowLeft width={24} height={24} fill="#30241F" />
+        </TouchableOpacity>
+
         {user.avatarUrl ? (
-          <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
+          <Image source={{uri: user.avatarUrl}} style={styles.avatar} />
         ) : (
           <UserIcon width={64} height={64} fill="#30241F" />
         )}
         <View style={styles.userInfo}>
           <Text style={styles.name}>{user.name || 'Your Name'}</Text>
-          <Text style={styles.email}>{user.email || 'Tap Settings to update email'}</Text>
+          <Text style={styles.email}>
+            {user.email || 'Tap Settings to update email'}
+          </Text>
           <Text style={styles.phone}>{user.phone || '+91XXXXXXXXXX'}</Text>
         </View>
         <TouchableOpacity
           onPress={() => navigation.navigate('ProfileSettings')}
-          style={styles.settingsBtn}
-        >
+          style={styles.settingsBtn}>
           <SettingsIcon width={24} height={24} fill="#30241F" />
         </TouchableOpacity>
       </View>
@@ -38,19 +46,17 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.menu}>
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('Wishlist')}
-        >
+          onPress={() => navigation.navigate('Wishlist')}>
           <Text style={styles.menuText}>My Wishlist</Text>
         </TouchableOpacity>
         <View style={styles.divider} />
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => {
-            setUser({ name: '', email: '', phone: '', avatarUrl: '' });
+            setUser({name: '', email: '', phone: '', avatarUrl: ''});
             navigation.replace('Welcome'); // adjust if login route is different
-          }}
-        >
-          <Text style={[styles.menuText, { color: '#E57373' }]}>Log Out</Text>
+          }}>
+          <Text style={[styles.menuText, {color: '#E57373'}]}>Log Out</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -58,30 +64,30 @@ export default function ProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF' },
+  container: {flex: 1, backgroundColor: '#FFF'},
   header: {
-    flexDirection:   'row',
-    alignItems:      'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',
   },
   avatar: {
-    width:        64,
-    height:       64,
+    width: 64,
+    height: 64,
     borderRadius: 32,
   },
   userInfo: {
-    flex:        1,
-    marginLeft:  16,
+    flex: 1,
+    marginLeft: 16,
   },
-  name:  { fontSize: 18, fontWeight: '700', color: '#1A1A1A' },
-  email: { fontSize: 14, color: '#666', marginTop: 4 },
-  phone: { fontSize: 14, color: '#666', marginTop: 4 },
+  name: {fontSize: 18, fontWeight: '700', color: '#1A1A1A'},
+  email: {fontSize: 14, color: '#666', marginTop: 4},
+  phone: {fontSize: 14, color: '#666', marginTop: 4},
   settingsBtn: {
-    padding:         8,
-    borderRadius:    16,
+    padding: 8,
+    borderRadius: 16,
     backgroundColor: 'rgba(0,0,0,0.05)',
   },
   menu: {
@@ -93,10 +99,10 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 16,
-    color:    '#1A1A1A',
+    color: '#1A1A1A',
   },
   divider: {
-    height:          1,
+    height: 1,
     backgroundColor: '#EEE',
   },
 });
