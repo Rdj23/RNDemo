@@ -1,15 +1,14 @@
-// Stub out missing ErrorUtils.reportFatalError so LogBoxData won’t crash
- if (!global.ErrorUtils || typeof global.ErrorUtils.reportFatalError !== 'function') {
-  global.ErrorUtils = {
-     reportFatalError: (error, isFatal = false) => {
-       console.error(
-         `[reportFatalError] ${isFatal ? 'Fatal:' : ''}`,
-         error
-       );
-     },
-   };
- }
 
+
+// Ensure ErrorUtils has a reportFatalError method so crashes are logged
+if (!global.ErrorUtils?.reportFatalError) {
+  global.ErrorUtils = {
+    ...(global.ErrorUtils || {}),
+    reportFatalError: (error, isFatal = false) => {
+      console.error(`[reportFatalError] ${isFatal ? 'Fatal:' : ''}`, error);
+    },
+  };
+}
 import 'react-native-gesture-handler';
 import {AppRegistry} from 'react-native';
 import App from './App.js';
