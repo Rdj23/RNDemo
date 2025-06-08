@@ -2,6 +2,7 @@
 // Ensure React Native's error handling is initialized before anything uses it
 // so that `ErrorUtils.reportFatalError` always exists.
 import '@react-native/js-polyfills/error-guard';
+import 'react-native/Libraries/Core/InitializeCore';
 
 // Polyfill ErrorUtils early so modules can safely use it
 if (!global.ErrorUtils) {
