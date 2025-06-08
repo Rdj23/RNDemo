@@ -12,6 +12,7 @@ import TrashIcon     from '../../resources/icons/Trash.svg';
 import SearchIcon    from '../../resources/icons/Search.svg';
 
 
+
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 24 * 2 - 16) / 2; // 2 cards per row
 
